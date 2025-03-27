@@ -17,6 +17,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
     _activities = _activityController.fetchActivities();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
