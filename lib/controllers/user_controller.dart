@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+// Removed unused import for 'flutter_bloc'
 import 'package:trash_crew/bloc/user_bloc.dart';
 import 'package:trash_crew/models/user_model.dart';
 import 'package:trash_crew/services/api_service.dart';
