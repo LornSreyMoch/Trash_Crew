@@ -10,6 +10,7 @@ class ApiService {
   static const String baseUrl = 'https://pay1.jetdev.life';
   final StorageService _storageService = StorageService();
 
+  // Login
   Future<User?> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/account/login'),
@@ -26,6 +27,7 @@ class ApiService {
     return null;
   }
 
+  // Register
   Future<bool> register(User user) async {
     try {
       final response = await http.post(
@@ -40,8 +42,8 @@ class ApiService {
     }
   }
 
+  // Schedule Pickup
   Future<List<PickupRequest>> schedulePickup({
-    int limit = 20,
     required String userId,
     required String date,
     required List<String> wasteTypes,
@@ -56,13 +58,13 @@ class ApiService {
     final requestBody = {
       "userId": userId,
       "date": date,
-      "wasteTypes": wasteTypes.isNotEmpty ? wasteTypes : [],
+      "wasteTypes": wasteTypes,
       "estimateWeight": estimateWeight,
       "recurring": recurring,
     };
 
     final response = await http.post(
-      Uri.parse('$baseUrl/api/pickup/schedule?limit=$limit'),
+      Uri.parse('$baseUrl/api/pickup/schedule'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -74,105 +76,53 @@ class ApiService {
       List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => PickupRequest.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to create schedule');
+      throw Exception('Failed to create schedule: ${response.body}');
     }
   }
 
-
+  // Fetch Activities
   Future<List<Activity>> fetchActivities({int limit = 20}) async {
-    try {
-      // final token = await _storageService.getToken(); // Retrieve token
-      final token =
-          "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvcGhlYWtAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6InNvcGhlYWsiLCJzdWIiOiJhNjM0ZDBiMy02YzIzLTQ4ZGEtOTdhNy01ZTU4MTIxYzYyN2YiLCJpZCI6ImE2MzRkMGIzLTZjMjMtNDhkYS05N2E3LTVlNTgxMjFjNjI3ZiIsIm5iZiI6MTc0MzA0MjQwNCwiZXhwIjoxNzQzNjQ3MjA0LCJpYXQiOjE3NDMwNDI0MDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiJ9.6Ws38D0BqI5Z9mFaAwYyDx5H7G4Mb9VfPrNLYoHHmrkkmuKLK8bQSD2jKTnY3PswRcXnNwtCknE9sZ64z9NTVg";
-
-      if (token == null) {
-        throw Exception('Token not found');
-      }
-
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/account/activity?limit=$limit'),
-        headers: {'Authorization': 'Bearer $token'}, // Use token
-      );
-
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => Activity.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load activities');
-      }
-    } catch (e) {
-      print('Error fetching activities: $e');
-      return [];
-    }
-  }
-  
-  // Fetch points
-
-  Future<List<Points>> fetchPoints() async {
-  try {
-    // Replace with actual token retrieval method
-      final token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvcGhlYWtAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6InNvcGhlYWsiLCJzdWIiOiJhNjM0ZDBiMy02YzIzLTQ4ZGEtOTdhNy01ZTU4MTIxYzYyN2YiLCJpZCI6ImE2MzRkMGIzLTZjMjMtNDhkYS05N2E3LTVlNTgxMjFjNjI3ZiIsIm5iZiI6MTc0MzA0MjQwNCwiZXhwIjoxNzQzNjQ3MjA0LCJpYXQiOjE3NDMwNDI0MDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiJ9.6Ws38D0BqI5Z9mFaAwYyDx5H7G4Mb9VfPrNLYoHHmrkkmuKLK8bQSD2jKTnY3PswRcXnNwtCknE9sZ64z9NTVg";
-
-    if (token.isEmpty) {
-      throw Exception('Token not found');
-    }
-
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/account/points'), // Updated endpoint for user profile
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
- 
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-            print("------------ ${jsonResponse}");
-
-
-      if (jsonResponse is List) {
-        // Response is a list of users
-        return jsonResponse.map((json) => Points.fromJson(json)).toList();
-      } else if (jsonResponse is Map<String, dynamic>) {
-        // Response is a single user object
-        return [Points.fromJson(jsonResponse)];
-      } else {
-        throw Exception('Unexpected data format received');
-      }
-    } else {
-      throw Exception('Failed to load users: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error fetching profile: $e');
-    return [];
-  }
-}
-
-
-  Future<List<Activity>> fetchUnimplementedActivities() {
-    throw UnimplementedError('fetchActivities is not yet implemented');
-  }
-
-}
-
-  final StorageService _storageService = StorageService(); // Ensure this is declared in the class
-
-  Future<List<Activity>> fetchActivities({int limit = 20}) async {
-    final token = await _storageService.getToken(); // Retrieve token
+    final token = await _storageService.getToken();
     if (token == null) {
       throw Exception('Token not found');
     }
 
     final response = await http.get(
-      Uri.parse('${ApiService.baseUrl}/api/account/activity?limit=$limit'),
-      headers: {'Authorization': 'Bearer $token'}, // Use token
+      Uri.parse('$baseUrl/api/account/activity?limit=$limit'),
+      headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Activity.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load activities: ${response.body}');
     }
-    return [];
   }
 
+  // Fetch Points
+  Future<List<Points>> fetchPoints() async {
+    final token = await _storageService.getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
 
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/account/points'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
- 
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      if (jsonResponse is List) {
+        return jsonResponse.map((json) => Points.fromJson(json)).toList();
+      } else if (jsonResponse is Map<String, dynamic>) {
+        return [Points.fromJson(jsonResponse)];
+      } else {
+        throw Exception('Unexpected data format received');
+      }
+    } else {
+      throw Exception('Failed to load points: ${response.body}');
+    }
+  }
+}
