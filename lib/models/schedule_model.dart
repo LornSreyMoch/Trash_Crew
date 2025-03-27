@@ -1,29 +1,28 @@
-class SchedulePickup {
+class PickupRequest {
+  final int id;
+  final String userId;
   final String date;
-  final String time;
   final List<String> wasteTypes;
+  final double estimateWeight;
+  final bool recurring;
 
-  SchedulePickup({
+  PickupRequest({
+    required this.id,
+    required this.userId,
     required this.date,
-    required this.time,
     required this.wasteTypes,
+    required this.estimateWeight,
+    required this.recurring,
   });
 
-  // Implementing toJson() method to convert object to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'time': time,
-      'wasteTypes': wasteTypes, // Waste types is a list
-    };
-  }
-
-  // Optional: Factory constructor to create a SchedulePickup from JSON (useful for parsing API responses)
-  factory SchedulePickup.fromJson(Map<String, dynamic> json) {
-    return SchedulePickup(
-      date: json['date'],
-      time: json['date'].substring(11, 16), // Extracting time from date
-      wasteTypes: List<String>.from(json['wasteTypes']),
+  factory PickupRequest.fromJson(Map<String, dynamic> json) {
+    return PickupRequest(
+      id: json['id'] ?? 0, // Provide a default value if null
+      userId: json['userId'] ?? '',
+      date: json['date'] ?? '',
+      wasteTypes: (json['wasteTypes'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      estimateWeight: (json['estimateWeight'] as num?)?.toDouble() ?? 0.0, // Convert safely
+      recurring: json['recurring'] ?? false,
     );
   }
 }
