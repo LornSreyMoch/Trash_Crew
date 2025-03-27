@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trash_crew/bloc/user_bloc.dart';
 import 'package:trash_crew/views/Splash.dart';
-import 'package:trash_crew/views/Login.dart';
 
 void main() {
   runApp(
