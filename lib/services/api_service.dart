@@ -85,22 +85,29 @@ class ApiService {
     }
   }
 
-  Future<List<Activity>> fetchActivities() async {
+  Future<List<Activity>> fetchActivities({int limit = 20}) async {
     try {
+      // final token = await _storageService.getToken(); // Retrieve token
+      final token =
+          "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvcGhlYWtAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6InNvcGhlYWsiLCJzdWIiOiJhNjM0ZDBiMy02YzIzLTQ4ZGEtOTdhNy01ZTU4MTIxYzYyN2YiLCJpZCI6ImE2MzRkMGIzLTZjMjMtNDhkYS05N2E3LTVlNTgxMjFjNjI3ZiIsIm5iZiI6MTc0MzA0MjQwNCwiZXhwIjoxNzQzNjQ3MjA0LCJpYXQiOjE3NDMwNDI0MDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiJ9.6Ws38D0BqI5Z9mFaAwYyDx5H7G4Mb9VfPrNLYoHHmrkkmuKLK8bQSD2jKTnY3PswRcXnNwtCknE9sZ64z9NTVg";
+
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
       final response = await http.get(
-        Uri.parse('$baseUrl/api/activities'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('$baseUrl/api/account/activity?limit=$limit'),
+        headers: {'Authorization': 'Bearer $token'}, // Use token
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((activity) => Activity.fromJson(activity)).toList();
+        List<dynamic> data = jsonDecode(response.body);
+        return data.map((json) => Activity.fromJson(json)).toList();
       } else {
-        print('Error fetching activities: ${response.body}');
-        return [];
+        throw Exception('Failed to load activities');
       }
     } catch (e) {
-      print('Error during fetching activities: $e');
+      print('Error fetching activities: $e');
       return [];
     }
   }
@@ -143,6 +150,9 @@ class ApiService {
     return [];
   }
 }
+
+ 
+
 }
 
 

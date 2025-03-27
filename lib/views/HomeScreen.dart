@@ -587,12 +587,12 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:trash_crew/models/point_model.dart';
 import 'package:trash_crew/controllers/point_controller.dart';
+import 'package:trash_crew/views/activity_screen.dart';
+import 'package:trash_crew/views/reward.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -602,7 +602,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-   final PointController _pointsController = PointController();
+  final PointController _pointsController = PointController();
 
   late Future<List<Points>> _points;
 
@@ -726,7 +726,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     FutureBuilder<List<Points>>(
                       future: _points,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Text(
                             'Loading...',
                             style: TextStyle(
@@ -745,8 +746,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         } else if (snapshot.hasData) {
-                          final totalPoints = snapshot.data!
-                              .fold(0, (sum, point) => sum + point.totalPoints);
+                          final totalPoints = snapshot.data!.fold(
+                            0,
+                            (sum, point) => sum + point.totalPoints,
+                          );
                           return Text(
                             '$totalPoints',
                             style: const TextStyle(
@@ -772,7 +775,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     FutureBuilder<List<Points>>(
                       future: _points,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Text(
                             'Loading...',
                             style: TextStyle(color: Colors.white, fontSize: 16),
@@ -783,11 +787,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           );
                         } else if (snapshot.hasData) {
-                          final cashEquivalent = snapshot.data!
-                              .fold(0.0, (sum, point) => sum + point.cashEquivalent);
+                          final cashEquivalent = snapshot.data!.fold(
+                            0.0,
+                            (sum, point) => sum + point.cashEquivalent,
+                          );
                           return Text(
                             "\$${cashEquivalent.toStringAsFixed(2)}",
-                            style: const TextStyle(color: Colors.white, fontSize: 16),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           );
                         } else {
                           return const Text(
@@ -901,53 +910,71 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: 120,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 235, 225, 190),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: const Color.fromARGB(255, 223, 202, 129),
-                            width: 1,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RewardScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 120,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 235, 225, 190),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: const Color.fromARGB(255, 223, 202, 129),
+                              width: 1,
+                            ),
                           ),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 232, 197, 146),
-                                borderRadius: BorderRadius.circular(6),
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(
+                                    255,
+                                    232,
+                                    197,
+                                    146,
+                                  ),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/icons/redeem.png',
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
                               ),
-                              child: Image(
-                                image: AssetImage('assets/icons/redeem.png'),
-                                width: 24,
-                                height: 24,
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Recycle Now',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 211, 184, 86),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Recycle Now',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 211, 184, 86),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                              const Text(
+                                'Points',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 211, 184, 86),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            const Text(
-                              'Points',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 211, 184, 86),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -971,11 +998,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        'View All',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 24, 45, 200),
-                          fontSize: 14,
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ActivityScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'View All',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 24, 45, 200),
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ],
@@ -1201,12 +1238,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
-

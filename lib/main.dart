@@ -5,6 +5,7 @@ import 'package:trash_crew/views/HomeScreen.dart';
 import 'package:trash_crew/views/Splash.dart';
 import 'package:trash_crew/views/Login.dart';
 import 'package:trash_crew/views/activity_screen.dart';
+import 'package:trash_crew/views/reward.dart';
 
 void main() {
   runApp(
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ActivityScreen()
+      home:const HomeScreen()
     );
   }
 }
