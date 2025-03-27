@@ -2,39 +2,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trash_crew/models/activity_model.dart';
 import 'package:trash_crew/models/point_model.dart';
-
 import 'package:trash_crew/models/schedule_model.dart';
 import 'package:trash_crew/models/user_model.dart';
 import 'package:trash_crew/services/storage_service.dart';
-import 'package:trash_crew/models/point_model.dart';
 
 class ApiService {
   static const String baseUrl = 'https://pay1.jetdev.life';
   final StorageService _storageService = StorageService();
 
   Future<User?> login(String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/account/login'),
-        body: jsonEncode({'username': email, 'password': password}),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final user = User.fromJson(data);
-
-        if (user.token != null) {
-          await _storageService.saveToken(user.token!);
-        }
-        return user;
-      } else {
-        print('Login failed: ${response.body}');
-        throw Exception('Login failed: ${response.body}');
-
     final response = await http.post(
       Uri.parse('$baseUrl/api/account/login'),
       body: jsonEncode({'username': email, 'password': password}),
@@ -64,27 +40,7 @@ class ApiService {
     }
   }
 
-  // Future<PickupRequest?> schedulePickup(String data, String wasteTypes, String estimatedWeight) async {
-  //   final response = await http.post(
-  //     Uri.parse('$baseUrl/api/account/schedule'),
-  //     body: jsonEncode({
-  //       'date': data,
-  //       'wasteTypes': [wasteTypes],
-  //       'estimatedWeight': estimatedWeight,
-  //     }),
-  //     headers: {'Content-Type': 'application/json'},
-  //   );
-  //   if (response.statusCode == 200) {
-  //     final pickup = PickupRequest.fromJson(jsonDecode(response.body));
-  //     if (pickup.token != null) {
-  //       await _storageService.saveToken(pickup.token!); // Save token
-  //     }
-  //     return pickup;
-  //   }
-  // }
-  // Create new schedule
-  Future<List<PickupRequest>>
-    schedulePickup({
+  Future<List<PickupRequest>> schedulePickup({
     int limit = 20,
     required String userId,
     required String date,
@@ -122,14 +78,7 @@ class ApiService {
     }
   }
 
-  Future<List<Activity>> fetchActivities({int limit = 20}) async {
-    final token = await _storageService.getToken(); // Retrieve token
-    if (token == null) {
-      throw Exception('Token not found');
-    }
-  }
-  
-  // Fetch points
+
   Future<List<Points>> fetchPoints() async {
   try {
     // Replace with actual token retrieval method
@@ -167,11 +116,22 @@ class ApiService {
     return [];
   }
 }
+
+  Future<List<Activity>> fetchActivities() {
+    throw UnimplementedError('fetchActivities is not yet implemented');
+  }
 }
 
+  final StorageService _storageService = StorageService(); // Ensure this is declared in the class
+
+  Future<List<Activity>> fetchActivities({int limit = 20}) async {
+    final token = await _storageService.getToken(); // Retrieve token
+    if (token == null) {
+      throw Exception('Token not found');
+    }
 
     final response = await http.get(
-      Uri.parse('$baseUrl/api/account/activity?limit=$limit'),
+      Uri.parse('${ApiService.baseUrl}/api/account/activity?limit=$limit'),
       headers: {'Authorization': 'Bearer $token'}, // Use token
     );
 
@@ -181,4 +141,3 @@ class ApiService {
     }
     return [];
   }
-}

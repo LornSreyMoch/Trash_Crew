@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trash_crew/bloc/user_bloc.dart';
 import 'package:trash_crew/controllers/user_controller.dart';
-import 'package:trash_crew/models/schedule_model.dart';
+import 'package:trash_crew/views/HomeScreen.dart';
 import 'package:trash_crew/views/Schedule.dart';
 import 'package:trash_crew/views/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // To store and retrieve token
@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print("Token found, navigating to Schedule...");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Schedule()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
   }
@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print("Login successful, navigating to Schedule...");
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Schedule()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       } else {
         print("Login failed: Invalid username or password");
