@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trash_crew/bloc/user_bloc.dart';
+import 'package:trash_crew/views/HomeScreen.dart';
 import 'package:trash_crew/views/Splash.dart';
+
+import 'package:trash_crew/views/Login.dart';
+import 'package:trash_crew/views/activity_screen.dart';
+
 
 void main() {
   runApp(
@@ -25,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Splash(),
+      home: ActivityScreen()
     );
   }
 }
