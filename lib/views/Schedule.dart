@@ -570,7 +570,7 @@ class _ScheduleState extends State<Schedule> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Homescreen(),
+                        builder: (context) => const HomeScreen(),
                       ),
                     );
                   },
