@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trash_crew/models/activity_model.dart';
+import 'package:trash_crew/models/point_model.dart';
 import 'package:trash_crew/models/user_model.dart';
 import 'package:trash_crew/models/schedule_model.dart'; // Ensure you have this model
 import 'package:trash_crew/services/storage_service.dart';
+import 'package:trash_crew/models/point_model.dart';
 
 class ApiService {
   static const String baseUrl = 'https://pay1.jetdev.life';
@@ -31,7 +33,7 @@ class ApiService {
         return user;
       } else {
         print('Login failed: ${response.body}');
-        return null;
+        throw Exception('Login failed: ${response.body}');
       }
     } catch (e) {
       print('Error during login: $e');
@@ -102,7 +104,45 @@ class ApiService {
       return [];
     }
   }
-}
+  
+  // Fetch points
+  Future<List<Points>> fetchPoints() async {
+  try {
+    // Replace with actual token retrieval method
+      final token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvcGhlYWtAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6InNvcGhlYWsiLCJzdWIiOiJhNjM0ZDBiMy02YzIzLTQ4ZGEtOTdhNy01ZTU4MTIxYzYyN2YiLCJpZCI6ImE2MzRkMGIzLTZjMjMtNDhkYS05N2E3LTVlNTgxMjFjNjI3ZiIsIm5iZiI6MTc0MzA0MjQwNCwiZXhwIjoxNzQzNjQ3MjA0LCJpYXQiOjE3NDMwNDI0MDQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI0NiJ9.6Ws38D0BqI5Z9mFaAwYyDx5H7G4Mb9VfPrNLYoHHmrkkmuKLK8bQSD2jKTnY3PswRcXnNwtCknE9sZ64z9NTVg";
 
+    if (token.isEmpty) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/account/points'), // Updated endpoint for user profile
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+ 
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+            print("------------ ${jsonResponse}");
+
+
+      if (jsonResponse is List) {
+        // Response is a list of users
+        return jsonResponse.map((json) => Points.fromJson(json)).toList();
+      } else if (jsonResponse is Map<String, dynamic>) {
+        // Response is a single user object
+        return [Points.fromJson(jsonResponse)];
+      } else {
+        throw Exception('Unexpected data format received');
+      }
+    } else {
+      throw Exception('Failed to load users: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching profile: $e');
+    return [];
+  }
+}
+}
 
 
