@@ -421,12 +421,12 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trash_crew/controllers/schedule_controller.dart';
 import 'package:trash_crew/models/schedule_model.dart';
 import 'package:trash_crew/views/HomeScreen.dart';
+import 'package:trash_crew/views/history.dart';
 
 enum RecurringPickupOption { oneDay, oneWeek, twoWeeks, oneMonth, oneYear }
 
@@ -512,6 +512,11 @@ class _ScheduleState extends State<Schedule> {
         recurring: recurringMonth || recurringWeek || recurringDay,
       );
 
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Pickup scheduled successfully!')));
@@ -527,10 +532,7 @@ class _ScheduleState extends State<Schedule> {
     return RadioListTile<RecurringPickupOption>(
       title: Text(
         text,
-        style: TextStyle(
-          color: Colors.black87,
-          fontWeight: FontWeight.w600,
-        ),
+        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
       ),
       value: option,
       groupValue: selectedRecurringOption,
@@ -570,16 +572,13 @@ class _ScheduleState extends State<Schedule> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Homescreen(),
+                        builder: (context) => PickupHistoryScreen(),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF4CAF50),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -596,7 +595,11 @@ class _ScheduleState extends State<Schedule> {
             // Date Picker
             const Text(
               "Select Date",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -612,7 +615,10 @@ class _ScheduleState extends State<Schedule> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 10,
+                ),
               ),
               onTap: () => _selectDate(context),
             ),
@@ -621,7 +627,11 @@ class _ScheduleState extends State<Schedule> {
             // Waste Type Selection
             const Text(
               "Waste Type (Multiple Selection)",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -637,7 +647,10 @@ class _ScheduleState extends State<Schedule> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 10,
+                ),
               ),
               onTap: () => _selectWasteTypes(context),
             ),
@@ -646,7 +659,11 @@ class _ScheduleState extends State<Schedule> {
             // Weight Input
             const Text(
               "Estimate Weight",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -662,7 +679,10 @@ class _ScheduleState extends State<Schedule> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 10,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -670,7 +690,11 @@ class _ScheduleState extends State<Schedule> {
             // Recurring Pickup Section
             const Text(
               "Recurring Pickup",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             _buildRadioOption(RecurringPickupOption.oneDay, "1 Day"),
@@ -733,22 +757,23 @@ class _MultiSelectDialogState extends State<MultiSelectDialog> {
       ),
       content: SingleChildScrollView(
         child: Column(
-          children: widget.wasteTypes.map((wasteType) {
-            return CheckboxListTile(
-              title: Text(
-                wasteType,
-                style: TextStyle(color: Colors.black87),
-              ),
-              value: selectedWasteTypes.contains(wasteType),
-              onChanged: (bool? selected) {
-                setState(() {
-                  selected!
-                      ? selectedWasteTypes.add(wasteType)
-                      : selectedWasteTypes.remove(wasteType);
-                });
-              },
-            );
-          }).toList(),
+          children:
+              widget.wasteTypes.map((wasteType) {
+                return CheckboxListTile(
+                  title: Text(
+                    wasteType,
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                  value: selectedWasteTypes.contains(wasteType),
+                  onChanged: (bool? selected) {
+                    setState(() {
+                      selected!
+                          ? selectedWasteTypes.add(wasteType)
+                          : selectedWasteTypes.remove(wasteType);
+                    });
+                  },
+                );
+              }).toList(),
         ),
       ),
       actions: [
@@ -756,13 +781,9 @@ class _MultiSelectDialogState extends State<MultiSelectDialog> {
           onPressed: () {
             Navigator.of(context).pop(selectedWasteTypes);
           },
-          child: const Text(
-            'OK',
-            style: TextStyle(color: Colors.black87),
-          ),
+          child: const Text('OK', style: TextStyle(color: Colors.black87)),
         ),
       ],
     );
   }
 }
-
